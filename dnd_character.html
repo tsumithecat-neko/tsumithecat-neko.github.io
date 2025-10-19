@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DND角色生成器</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cinzel', 'Times New Roman', serif;
+        }
+        
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+        
+        body {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(30, 15, 5, 0.8) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(20, 10, 30, 0.6) 0%, transparent 50%),
+                linear-gradient(135deg, #0c0a16 0%, #1a1429 30%, #2d1b2e 70%, #3a2439 100%);
+            color: #e0d0b0;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            background-attachment: fixed;
+        }
+        
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%239C92AC' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+            opacity: 0.3;
+            z-index: -1;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            flex-grow: 1;
+        }
+        
+        header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            color: #e0d0b0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            position: relative;
+            padding: 20px 0;
+        }
+        
+        header::before, header::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #b8945a, transparent);
+        }
+        
+        header::before {
+            left: 0;
+        }
+        
+        header::after {
+            right: 0;
+        }
+        
+        h1 {
+            font-size: 3.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #f0e6d2;
+            text-transform: uppercase;
+        }
+        
+        .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            font-style: italic;
+            letter-spacing: 1px;
+        }
+        
+        .form-container {
+            background: 
+                radial-gradient(ellipse at top, rgba(60, 30, 10, 0.7), transparent 70%),
+                radial-gradient(ellipse at bottom, rgba(40, 20, 5, 0.7), transparent 70%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23b8945a' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E"),
+                linear-gradient(to bottom, #2a1a1a, #3a2a2a, #2a1a1a);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 
+                0 0 20px rgba(184, 148, 90, 0.3),
+                inset 0 0 20px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 500px;
+            height: fit-content;
+            border: 1px solid #5d4037;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .form-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #b8945a, transparent);
+            box-shadow: 0 0 10px #b8945a;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #e0d0b0;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(30, 20, 10, 0.7);
+            border: 1px solid #5d4037;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+            color: #e0d0b0;
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: #b8945a;
+            outline: none;
+            box-shadow: 
+                inset 0 2px 5px rgba(0, 0, 0, 0.5),
+                0 0 10px rgba(184, 148, 90, 0.5);
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .upload-container {
+            border: 2px dashed #b8945a;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(40, 25, 10, 0.5);
+        }
+        
+        .upload-container:hover {
+            background: rgba(60, 40, 20, 0.7);
+            box-shadow: 0 0 15px rgba(184, 148, 90, 0.4);
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            color: #b8945a;
+            margin-bottom: 10px;
+        }
+        
+        .preview-container {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        #avatarPreview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            border: 3px solid #b8945a;
+            box-shadow: 0 0 10px rgba(184, 148, 90, 0.5);
+        }
+        
+        button {
+            background: linear-gradient(to bottom, #5d4037, #3e2723);
+            color: #e0d0b0;
+            border: 1px solid #8d6e63;
+            padding: 14px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
+        
+        button:hover {
+            background: linear-gradient(to bottom, #6d4037, #4e2723);
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 15px rgba(184, 148, 90, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        /* 角色卡样式 */
+        .card-container {
+            background: 
+                radial-gradient(ellipse at top, rgba(60, 30, 10, 0.7), transparent 70%),
+                radial-gradient(ellipse at bottom, rgba(40, 20, 5, 0.7), transparent 70%),
+                url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23b8945a' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E"),
+                linear-gradient(to bottom, #2a1a1a, #3a2a2a, #2a1a1a);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 
+                0 0 20px rgba(184, 148, 90, 0.3),
+                inset 0 0 20px rgba(0, 0, 0, 0.5),
+                0 10px 30px rgba(0, 0, 0, 0.7);
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            min-height: 400px;
+            border: 1px solid #5d4037;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card-container::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #b8945a, transparent);
+            box-shadow: 0 0 10px #b8945a;
+        }
+        
+        .card-left {
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            padding-right: 20px;
+            border-right: 2px solid #5d4037;
+        }
+        
+        .card-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #b8945a;
+            margin-bottom: 20px;
+            align-self: center;
+            box-shadow: 0 0 15px rgba(184, 148, 90, 0.5);
+        }
+        
+        .name-class-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-name {
+            font-size: 1.8rem;
+            color: #f0e6d2;
+            margin-bottom: 5px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+        
+        .card-class {
+            font-size: 1.1rem;
+            color: #b8945a;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            font-style: italic;
+        }
+        
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            min-height: 200px;
+        }
+        
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        
+        .card-right {
+            width: 60%;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stats-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            flex-grow: 1;
+        }
+        
+        .stat-item {
+            background: linear-gradient(to bottom, rgba(60, 30, 10, 0.7), rgba(40, 20, 5, 0.7));
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #5d4037;
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.5),
+                0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 
+                inset 0 0 10px rgba(0, 0, 0, 0.5),
+                0 6px 12px rgba(0, 0, 0, 0.5),
+                0 0 15px rgba(184, 148, 90, 0.3);
+        }
+        
+        .stat-value {
+            font-size: 5rem;
+            font-weight: bold;
+            color: #f0e6d2;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+        
+        .stat-name {
+            font-size: 1rem;
+            color: #b8945a;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            letter-spacing: 1px;
+        }
+        
+        .export-btn {
+            background: linear-gradient(to bottom, #5d4037, #3e2723);
+            color: #e0d0b0;
+            border: 1px solid #8d6e63;
+            width: auto;
+            padding: 15px 40px;
+            margin: 30px auto;
+            display: block;
+            font-size: 18px;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(to bottom, #6d4037, #4e2723);
+            box-shadow: 
+                0 6px 12px rgba(0, 0, 0, 0.7),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 15px rgba(184, 148, 90, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-container {
+                flex-direction: column;
+            }
+            
+            .card-left, .card-right {
+                width: 100%;
+                padding: 0;
+                border: none;
+            }
+            
+            .card-left {
+                margin-bottom: 20px;
+            }
+            
+            .stats-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DND角色生成器</h1>
+            <p class="subtitle">创建属于你的龙与地下城冒险角色</p>
+        </header>
+        
+        <div class="form-container">
+            <h2 style="color: #f0e6d2; text-align: center; margin-bottom: 20px; text-shadow: 2px 2px 4px rgba(0,0,0,0.7);">角色信息</h2>
+            <form id="characterForm">
+                <div class="form-group">
+                    <label for="name">角色姓名</label>
+                    <input type="text" id="name" placeholder="输入角色姓名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="class">职业</label>
+                    <select id="class" required>
+                        <option value="">选择职业</option>
+                        <option value="战士">战士</option>
+                        <option value="法师">法师</option>
+                        <option value="游侠">游侠</option>
+                        <option value="牧师">牧师</option>
+                        <option value="盗贼">盗贼</option>
+                        <option value="术士">术士</option>
+                        <option value="圣骑士">圣骑士</option>
+                        <option value="德鲁伊">德鲁伊</option>
+                        <option value="吟游诗人">吟游诗人</option>
+                    </select>
+                </div>
+                
+                <h3 style="color: #f0e6d2; margin-bottom: 15px; text-shadow: 1px 1px 2px rgba(0,0,0,0.7);">角色属性</h3>
+                <div class="stats-grid">
+                    <div class="form-group">
+                        <label for="str">力量(STR)</label>
+                        <input type="number" id="str" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dex">敏捷(DEX)</label>
+                        <input type="number" id="dex" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="con">体质(CON)</label>
+                        <input type="number" id="con" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="int">智力(INT)</label>
+                        <input type="number" id="int" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="wis">感知(WIS)</label>
+                        <input type="number" id="wis" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cha">魅力(CHA)</label>
+                        <input type="number" id="cha" placeholder="3-18" min="3" max="18" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>上传头像</label>
+                    <div class="upload-container" id="uploadArea">
+                        <div class="upload-icon">📷</div>
+                        <p>点击或拖拽图片到此处</p>
+                        <input type="file" id="avatar" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <img id="avatarPreview" src="" alt="头像预览">
+                    </div>
+                </div>
+                
+                <button type="button" id="generateBtn">生成角色卡</button>
+            </form>
+        </div>
+        
+        <div class="card-container" id="cardContainer">
+            <div class="card-left">
+                <img id="cardAvatar" class="card-avatar" src="https://via.placeholder.com/150" alt="角色头像">
+                <div class="name-class-container">
+                    <h2 id="cardName" class="card-name">角色姓名</h2>
+                    <p id="cardClass" class="card-class">职业: --</p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="radarChart"></canvas>
+                </div>
+            </div>
+            
+            <div class="card-right">
+                <div class="stats-list">
+                    <div class="stat-item">
+                        <div class="stat-value" id="statStr">--</div>
+                        <div class="stat-name">力量(STR)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statDex">--</div>
+                        <div class="stat-name">敏捷(DEX)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCon">--</div>
+                        <div class="stat-name">体质(CON)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statInt">--</div>
+                        <div class="stat-name">智力(INT)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statWis">--</div>
+                        <div class="stat-name">感知(WIS)</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="statCha">--</div>
+                        <div class="stat-name">魅力(CHA)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button class="export-btn" id="exportBtn" style="display: none;">导出为PNG图片</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const avatarInput = document.getElementById('avatar');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const previewContainer = document.getElementById('previewContainer');
+            const generateBtn = document.getElementById('generateBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const cardContainer = document.getElementById('cardContainer');
+            
+            // 上传头像功能
+            uploadArea.addEventListener('click', function() {
+                avatarInput.click();
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = 'rgba(80, 50, 30, 0.7)';
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.style.background = 'rgba(40, 25, 10, 0.5)';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = 'rgba(40, 25, 10, 0.5)';
+                
+                if (e.dataTransfer.files.length) {
+                    avatarInput.files = e.dataTransfer.files;
+                    handleAvatarUpload(e.dataTransfer.files[0]);
+                }
+            });
+            
+            avatarInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    handleAvatarUpload(this.files[0]);
+                }
+            });
+            
+            function handleAvatarUpload(file) {
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('请上传图片文件！');
+                }
+            }
+            
+            // 生成角色卡功能
+            generateBtn.addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const charClass = document.getElementById('class').value;
+                const str = parseInt(document.getElementById('str').value);
+                const dex = parseInt(document.getElementById('dex').value);
+                const con = parseInt(document.getElementById('con').value);
+                const int = parseInt(document.getElementById('int').value);
+                const wis = parseInt(document.getElementById('wis').value);
+                const cha = parseInt(document.getElementById('cha').value);
+                
+                // 验证输入
+                if (!name || !charClass) {
+                    alert('请填写姓名和职业！');
+                    return;
+                }
+                
+                const stats = [str, dex, con, int, wis, cha];
+                if (stats.some(stat => isNaN(stat) || stat < 3 || stat > 18)) {
+                    alert('请确保所有属性值在3-18之间！');
+                    return;
+                }
+                
+                // 更新角色卡信息
+                document.getElementById('cardName').textContent = name;
+                document.getElementById('cardClass').textContent = `职业: ${charClass}`;
+                
+                // 更新头像
+                if (avatarPreview.src) {
+                    document.getElementById('cardAvatar').src = avatarPreview.src;
+                }
+                
+                // 更新属性值
+                document.getElementById('statStr').textContent = str;
+                document.getElementById('statDex').textContent = dex;
+                document.getElementById('statCon').textContent = con;
+                document.getElementById('statInt').textContent = int;
+                document.getElementById('statWis').textContent = wis;
+                document.getElementById('statCha').textContent = cha;
+                
+                // 绘制六角图
+                drawRadarChart(stats);
+                
+                // 确保角色卡显示
+                cardContainer.style.display = 'flex';
+                
+                // 显示导出按钮
+                exportBtn.style.display = 'block';
+            });
+            
+            // 绘制六角图
+            function drawRadarChart(stats) {
+                const canvas = document.getElementById('radarChart');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置canvas尺寸
+                const container = document.querySelector('.chart-container');
+                const size = Math.min(container.clientWidth, container.clientHeight) * 0.9;
+                canvas.width = size;
+                canvas.height = size;
+                
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.7;
+                
+                // 绘制六角形网格
+                ctx.strokeStyle = '#5d4037';
+                ctx.lineWidth = 1;
+                
+                // 绘制同心六角形
+                for (let i = 1; i <= 5; i++) {
+                    ctx.beginPath();
+                    for (let j = 0; j < 6; j++) {
+                        const angle = (Math.PI * 2 * j) / 6 - Math.PI / 2;
+                        const x = centerX + Math.cos(angle) * (radius * i / 5);
+                        const y = centerY + Math.sin(angle) * (radius * i / 5);
+                        
+                        if (j === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                
+                // 绘制从中心到顶点的线
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+                
+                // 绘制数据多边形
+                ctx.fillStyle = 'rgba(184, 148, 90, 0.3)';
+                ctx.strokeStyle = '#b8945a';
+                ctx.lineWidth = 2;
+                
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+                    // DND属性范围是3-18，转换为0-100的比例
+                    const value = ((stats[i] - 3) / 15) * radius;
+                    const x = centerX + Math.cos(angle) * value;
+                    const y = centerY + Math.sin(angle) * value;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // 绘制数据点
+                ctx.fillStyle = '#b8945a';
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+                    const value = ((stats[i] - 3) / 15) * radius;
+                    const x = centerX + Math.cos(angle) * value;
+                    const y = centerY + Math.sin(angle) * value;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 添加属性标签
+                const attributes = ['力量', '敏捷', '体质', '智力', '感知', '魅力'];
+                ctx.fillStyle = '#e0d0b0';
+                ctx.font = '12px Cinzel';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                for (let i = 0; i < 6; i++) {
+                    const angle = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * (radius + 20);
+                    const y = centerY + Math.sin(angle) * (radius + 20);
+                    
+                    ctx.fillText(attributes[i], x, y);
+                }
+            }
+            
+            // 导出为PNG功能
+            exportBtn.addEventListener('click', function() {
+                // 使用html2canvas将角色卡转换为图片
+                html2canvas(cardContainer, {
+                    backgroundColor: null,
+                    scale: 2, // 提高分辨率
+                    useCORS: true // 允许跨域图片
+                }).then(function(canvas) {
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    link.download = 'DND角色卡.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            });
+            
+            // 初始绘制一个示例六角图
+            drawRadarChart([15, 14, 16, 12, 13, 14]);
+        });
+    </script>
+</body>
+</html>
