@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to 箱庭</title>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #000000;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* 二进制数字背景效果 */
+        .binary-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .binary-digit {
+            position: absolute;
+            color: rgba(0, 255, 255, 0.3);
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            user-select: none;
+            animation: fadeInOut 3s infinite alternate;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0.1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.1; }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            flex-grow: 1;
+            z-index: 1;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            width: 100%;
+            margin-bottom: 20px;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            color: #ffffff;
+        }
+        
+        .form-container {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+            width: 100%;
+            max-width: 500px;
+            height: fit-content;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .form-container h2 {
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+            border-bottom: 1px solid rgba(0, 255, 255, 0.3);
+            padding-bottom: 10px;
+        }
+        
+        .form-container h3 {
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+            margin: 20px 0 15px 0;
+            font-size: 1.4rem;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #00ffff;
+            text-shadow: 0 0 5px #00ffff;
+        }
+        
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.5);
+            color: #ffffff;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.3);
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            border-color: #00ffff;
+            outline: none;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .upload-container {
+            border: 2px dashed #00ffff;
+            border-radius: 8px;
+            padding: 25px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+        }
+        
+        .upload-container:hover {
+            background: rgba(0, 255, 255, 0.1);
+            box-shadow: 0 0 15px #00ffff;
+        }
+        
+        .upload-icon {
+            font-size: 40px;
+            color: #00ffff;
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .preview-container {
+            display: none;
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        #avatarPreview {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 50%;
+            border: 3px solid #00ffff;
+            box-shadow: 0 0 15px #00ffff;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #00aaff, #00ffff);
+            color: #000;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+        
+        button:hover {
+            background: linear-gradient(45deg, #00ffff, #00aaff);
+            box-shadow: 0 0 15px #00ffff;
+            transform: translateY(-2px);
+        }
+        
+        /* 角色卡样式 - 未来科技感 */
+        .card-container {
+            background: rgba(20, 20, 40, 0.7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.3);
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            min-height: 400px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            flex-direction: column;
+        }
+        
+        .card-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scanline 3s linear infinite;
+        }
+        
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .card-content {
+            display: flex;
+            flex-grow: 1;
+        }
+        
+        .card-left {
+            display: flex;
+            flex-direction: column;
+            width: 40%;
+            padding-right: 20px;
+            border-right: 1px solid rgba(0, 255, 255, 0.3);
+        }
+        
+        .card-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #00ffff;
+            margin-bottom: 20px;
+            align-self: center;
+            box-shadow: 0 0 15px #00ffff;
+        }
+        
+        .name-age-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .card-name {
+            font-size: 1.8rem;
+            color: #00ffff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 10px #00ffff;
+            letter-spacing: 1px;
+        }
+        
+        .card-age {
+            font-size: 1.2rem;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ffffff;
+        }
+        
+        .chart-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-grow: 1;
+            min-height: 200px;
+        }
+        
+        canvas {
+            max-width: 100%;
+            max-height: 100%;
+            filter: drop-shadow(0 0 5px #00ffff);
+        }
+        
+        .card-right {
+            width: 60%;
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .stats-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            flex-grow: 1;
+        }
+        
+        .stat-item {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(0, 255, 255, 0.3);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .stat-item:hover::before {
+            left: 100%;
+        }
+        
+        .stat-item:hover {
+            box-shadow: 0 0 10px #00ffff;
+            transform: translateY(-3px);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #00ffff;
+            text-shadow: 0 0 10px #00ffff;
+        }
+        
+        .stat-name {
+            font-size: 1rem;
+            color: #ffffff;
+            text-shadow: 0 0 5px #ffffff;
+        }
+        
+        /* 底部欢迎文字 */
+        .card-footer {
+            text-align: center;
+            color: rgba(0, 255, 255, 0.7);
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+            animation: pulse 3s infinite;
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 255, 255, 0.2);
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        .export-btn {
+            background: linear-gradient(45deg, #00aaff, #00ffff);
+            width: auto;
+            padding: 12px 30px;
+            margin: 20px auto;
+            display: block;
+            font-size: 18px;
+            z-index: 10;
+            position: relative;
+            color: #000;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(45deg, #00ffff, #00aaff);
+            box-shadow: 0 0 20px #00ffff;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .card-content {
+                flex-direction: column;
+            }
+            
+            .card-left, .card-right {
+                width: 100%;
+                padding: 0;
+                border: none;
+            }
+            
+            .card-left {
+                margin-bottom: 20px;
+            }
+            
+            .stats-list {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-list {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 二进制数字背景 -->
+    <div class="binary-bg" id="binaryBg"></div>
+    
+    <div class="container">
+        <header>
+            <h1>Welcome to 箱庭</h1>
+            <p class="subtitle">■ 游戏角色信息录入中……</p>
+        </header>
+        
+        <div class="form-container">
+            <h2>角色信息</h2>
+            <form id="characterForm">
+                <div class="form-group">
+                    <label for="name">角色姓名</label>
+                    <input type="text" id="name" placeholder="输入角色姓名" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="age">年龄</label>
+                    <input type="number" id="age" placeholder="输入角色年龄" min="1" max="100" required>
+                </div>
+                
+                <h3>角色属性</h3>
+                <div class="stats-grid">
+                    <div class="form-group">
+                        <label for="str">力量(STR)</label>
+                        <input type="number" id="str" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="con">体质(CON)</label>
+                        <input type="number" id="con" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="siz">体型(SIZ)</label>
+                        <input type="number" id="siz" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dex">敏捷(DEX)</label>
+                        <input type="number" id="dex" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="app">外貌(APP)</label>
+                        <input type="number" id="app" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="int">智力(INT)</label>
+                        <input type="number" id="int" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="pow">意志(POW)</label>
+                        <input type="number" id="pow" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="edu">教育(EDU)</label>
+                        <input type="number" id="edu" placeholder="0-100" min="0" max="100" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>上传头像</label>
+                    <div class="upload-container" id="uploadArea">
+                        <div class="upload-icon">📷</div>
+                        <p>点击或拖拽图片到此处</p>
+                        <input type="file" id="avatar" accept="image/*" style="display: none;">
+                    </div>
+                    <div class="preview-container" id="previewContainer">
+                        <img id="avatarPreview" src="" alt="头像预览">
+                    </div>
+                </div>
+                
+                <button type="button" id="generateBtn">生成角色卡</button>
+            </form>
+        </div>
+        
+        <div class="card-container" id="cardContainer">
+            <div class="card-content">
+                <div class="card-left">
+                    <img id="cardAvatar" class="card-avatar" src="https://via.placeholder.com/150" alt="角色头像">
+                    <div class="name-age-container">
+                        <h2 id="cardName" class="card-name">角色姓名</h2>
+                        <p id="cardAge" class="card-age">年龄: --</p>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="card-right">
+                    <div class="stats-list">
+                        <div class="stat-item">
+                            <div class="stat-value" id="statStr">--</div>
+                            <div class="stat-name">力量(STR)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statCon">--</div>
+                            <div class="stat-name">体质(CON)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statSiz">--</div>
+                            <div class="stat-name">体型(SIZ)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statDex">--</div>
+                            <div class="stat-name">敏捷(DEX)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statApp">--</div>
+                            <div class="stat-name">外貌(APP)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statInt">--</div>
+                            <div class="stat-name">智力(INT)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statPow">--</div>
+                            <div class="stat-name">意志(POW)</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="statEdu">--</div>
+                            <div class="stat-name">教育(EDU)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 底部欢迎文字 -->
+            <div class="card-footer">----Welcome to 箱庭----</div>
+        </div>
+    </div>
+    
+    <button class="export-btn" id="exportBtn" style="display: none;">导出为PNG图片</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.getElementById('uploadArea');
+            const avatarInput = document.getElementById('avatar');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const previewContainer = document.getElementById('previewContainer');
+            const generateBtn = document.getElementById('generateBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const cardContainer = document.getElementById('cardContainer');
+            
+            // 二进制数字背景效果
+            function createBinaryBackground() {
+                const binaryBg = document.getElementById('binaryBg');
+                const digits = ['0', '1'];
+                const numDigits = 500; // 大幅增加数字数量
+                
+                // 清除现有内容
+                binaryBg.innerHTML = '';
+                
+                for (let i = 0; i < numDigits; i++) {
+                    const digit = document.createElement('div');
+                    digit.className = 'binary-digit';
+                    digit.textContent = digits[Math.floor(Math.random() * digits.length)];
+                    digit.style.left = `${Math.random() * 100}%`;
+                    digit.style.top = `${Math.random() * 100}%`;
+                    digit.style.animationDelay = `${Math.random() * 3}s`; // 减少延迟时间
+                    digit.style.fontSize = `${12 + Math.random() * 8}px`; // 稍微减小字体大小
+                    binaryBg.appendChild(digit);
+                }
+                
+                // 定期更新数字 - 加快更新速度
+                setInterval(() => {
+                    const binaryDigits = document.querySelectorAll('.binary-digit');
+                    binaryDigits.forEach(digit => {
+                        if (Math.random() > 0.5) { // 提高更新概率
+                            digit.textContent = digits[Math.floor(Math.random() * digits.length)];
+                            digit.style.opacity = 0.1 + Math.random() * 0.5;
+                        }
+                    });
+                }, 600); // 减少更新间隔
+            }
+            
+            // 确保DOM完全加载后再创建背景
+            setTimeout(createBinaryBackground, 100);
+            
+            // 上传头像功能
+            uploadArea.addEventListener('click', function() {
+                avatarInput.click();
+            });
+            
+            uploadArea.addEventListener('dragover', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = 'rgba(0, 255, 255, 0.2)';
+            });
+            
+            uploadArea.addEventListener('dragleave', function() {
+                uploadArea.style.background = '';
+            });
+            
+            uploadArea.addEventListener('drop', function(e) {
+                e.preventDefault();
+                uploadArea.style.background = '';
+                
+                if (e.dataTransfer.files.length) {
+                    avatarInput.files = e.dataTransfer.files;
+                    handleAvatarUpload(e.dataTransfer.files[0]);
+                }
+            });
+            
+            avatarInput.addEventListener('change', function() {
+                if (this.files.length) {
+                    handleAvatarUpload(this.files[0]);
+                }
+            });
+            
+            function handleAvatarUpload(file) {
+                if (file.type.match('image.*')) {
+                    const reader = new FileReader();
+                    
+                    reader.onload = function(e) {
+                        avatarPreview.src = e.target.result;
+                        previewContainer.style.display = 'block';
+                    };
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('请上传图片文件！');
+                }
+            }
+            
+            // 生成角色卡功能
+            generateBtn.addEventListener('click', function() {
+                const name = document.getElementById('name').value;
+                const age = document.getElementById('age').value;
+                const str = parseInt(document.getElementById('str').value);
+                const con = parseInt(document.getElementById('con').value);
+                const siz = parseInt(document.getElementById('siz').value);
+                const dex = parseInt(document.getElementById('dex').value);
+                const app = parseInt(document.getElementById('app').value);
+                const int = parseInt(document.getElementById('int').value);
+                const pow = parseInt(document.getElementById('pow').value);
+                const edu = parseInt(document.getElementById('edu').value);
+                
+                // 验证输入
+                if (!name || !age) {
+                    alert('请填写姓名和年龄！');
+                    return;
+                }
+                
+                const stats = [str, con, siz, dex, app, int, pow, edu];
+                if (stats.some(stat => isNaN(stat) || stat < 0 || stat > 100)) {
+                    alert('请确保所有属性值在0-100之间！');
+                    return;
+                }
+                
+                // 更新角色卡信息
+                document.getElementById('cardName').textContent = name;
+                document.getElementById('cardAge').textContent = `年龄: ${age}`;
+                
+                // 更新头像
+                if (avatarPreview.src) {
+                    document.getElementById('cardAvatar').src = avatarPreview.src;
+                }
+                
+                // 更新属性值
+                document.getElementById('statStr').textContent = str;
+                document.getElementById('statCon').textContent = con;
+                document.getElementById('statSiz').textContent = siz;
+                document.getElementById('statDex').textContent = dex;
+                document.getElementById('statApp').textContent = app;
+                document.getElementById('statInt').textContent = int;
+                document.getElementById('statPow').textContent = pow;
+                document.getElementById('statEdu').textContent = edu;
+                
+                // 绘制八角图
+                drawRadarChart(stats);
+                
+                // 确保角色卡显示
+                cardContainer.style.display = 'flex';
+                
+                // 显示导出按钮
+                exportBtn.style.display = 'block';
+            });
+            
+            // 绘制八角图
+            function drawRadarChart(stats) {
+                const canvas = document.getElementById('radarChart');
+                const ctx = canvas.getContext('2d');
+                
+                // 设置canvas尺寸
+                const container = document.querySelector('.chart-container');
+                const size = Math.min(container.clientWidth, container.clientHeight) * 0.9;
+                canvas.width = size;
+                canvas.height = size;
+                
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                
+                const centerX = canvas.width / 2;
+                const centerY = canvas.height / 2;
+                const radius = Math.min(centerX, centerY) * 0.7;
+                
+                // 绘制八角形网格
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 1;
+                
+                // 绘制同心八角形
+                for (let i = 1; i <= 5; i++) {
+                    ctx.beginPath();
+                    for (let j = 0; j < 8; j++) {
+                        const angle = (Math.PI * 2 * j) / 8 - Math.PI / 2;
+                        const x = centerX + Math.cos(angle) * (radius * i / 5);
+                        const y = centerY + Math.sin(angle) * (radius * i / 5);
+                        
+                        if (j === 0) {
+                            ctx.moveTo(x, y);
+                        } else {
+                            ctx.lineTo(x, y);
+                        }
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+                
+                // 绘制从中心到顶点的线
+                for (let i = 0; i < 8; i++) {
+                    const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * radius;
+                    const y = centerY + Math.sin(angle) * radius;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(centerX, centerY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+                
+                // 绘制数据多边形
+                ctx.fillStyle = 'rgba(0, 255, 255, 0.2)';
+                ctx.strokeStyle = '#00ffff';
+                ctx.lineWidth = 2;
+                
+                ctx.beginPath();
+                for (let i = 0; i < 8; i++) {
+                    const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
+                    const value = stats[i] / 100 * radius;
+                    const x = centerX + Math.cos(angle) * value;
+                    const y = centerY + Math.sin(angle) * value;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                }
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+                
+                // 绘制数据点
+                ctx.fillStyle = '#00ffff';
+                for (let i = 0; i < 8; i++) {
+                    const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
+                    const value = stats[i] / 100 * radius;
+                    const x = centerX + Math.cos(angle) * value;
+                    const y = centerY + Math.sin(angle) * value;
+                    
+                    ctx.beginPath();
+                    ctx.arc(x, y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 添加属性标签
+                const attributes = ['力量', '体质', '体型', '敏捷', '外貌', '智力', '意志', '教育'];
+                ctx.fillStyle = '#00ffff';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                
+                for (let i = 0; i < 8; i++) {
+                    const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
+                    const x = centerX + Math.cos(angle) * (radius + 20);
+                    const y = centerY + Math.sin(angle) * (radius + 20);
+                    
+                    ctx.fillText(attributes[i], x, y);
+                }
+            }
+            
+            // 导出为PNG功能
+            exportBtn.addEventListener('click', function() {
+                // 使用html2canvas将角色卡转换为图片
+                html2canvas(cardContainer, {
+                    backgroundColor: '#000000',
+                    scale: 2, // 提高分辨率
+                    useCORS: true // 允许跨域图片
+                }).then(function(canvas) {
+                    // 创建下载链接
+                    const link = document.createElement('a');
+                    link.download = '箱庭角色卡.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            });
+            
+            // 初始绘制一个示例八角图
+            drawRadarChart([50, 60, 70, 55, 65, 75, 60, 70]);
+        });
+    </script>
+</body>
+</html>
