@@ -765,78 +765,7 @@
             }
             
             // 导出为PNG功能
- exportBtn.addEventListener('click', function() {
-    html2canvas(cardContainer, {
-        backgroundColor: null,
-        scale: 2,
-        useCORS: true
-    }).then(function(canvas) {
-        if (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
-            // 移动端处理
-            const dataUrl = canvas.toDataURL('image/png');
-            downloadOnMobile(dataUrl, 'DND角色卡.png');
-        } else {
-            // 桌面端处理
-            const link = document.createElement('a');
-            link.download = 'DND角色卡.png';
-            link.href = canvas.toDataURL('image/png');
-            link.click();
-        }
-    });
-});
-
-// 移动端下载函数
-function downloadOnMobile(dataUrl, filename) {
-    // 方法1：使用FileSaver.js（推荐）
-    if (typeof saveAs !== 'undefined') {
-        canvas.toBlob(function(blob) {
-            saveAs(blob, filename);
-        });
-        return;
-    }
-    
-    // 方法2：在新窗口打开图片让用户手动保存
-    const newWindow = window.open();
-    newWindow.document.write(`<img src="${dataUrl}" alt="${filename}" style="max-width:100%;"/>`);
-    
-    // 方法3：显示提示让用户长按保存
-    showSaveInstructions(dataUrl);
-}
-
-function showSaveInstructions(dataUrl) {
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0,0,0,0.8);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 10000;
-        color: white;
-        text-align: center;
-        padding: 20px;
-    `;
-    
-    overlay.innerHTML = `
-        <div style="background: white; padding: 20px; border-radius: 10px; color: black;">
-            <h3>保存图片</h3>
-            <p>请长按下面的图片，然后选择"保存图像"</p>
-            <img src="${dataUrl}" style="max-width: 100%; margin: 10px 0; border: 1px solid #ccc;" />
-            <button id="closeOverlay" style="margin-top: 10px; padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px;">关闭</button>
-        </div>
-    `;
-    
-    document.body.appendChild(overlay);
-    
-    overlay.querySelector('#closeOverlay').addEventListener('click', function() {
-        document.body.removeChild(overlay);
-    });
-}           exportBtn.addEventListener('click', function() {
+            exportBtn.addEventListener('click', function() {
                 // 使用html2canvas将角色卡转换为图片
                 html2canvas(cardContainer, {
                     backgroundColor: null,
@@ -850,7 +779,6 @@ function showSaveInstructions(dataUrl) {
                     link.click();
                 });
             });
-            
             // 初始绘制一个示例六角图
             drawRadarChart([15, 14, 16, 12, 13, 14]);
         });
@@ -858,5 +786,6 @@ function showSaveInstructions(dataUrl) {
 </body>
 
 </html>
+
 
 
