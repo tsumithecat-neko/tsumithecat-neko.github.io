@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DND角色生成器</title>
+    <title>DND简易角色卡生成器</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
@@ -351,14 +351,14 @@
         }
         
         .stat-value {
-            font-size: 5rem;
+            font-size: 4.8rem;
             font-weight: bold;
             color: #f0e6d2;
             text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
         }
         
         .stat-name {
-            font-size: 1rem;
+            font-size: 1.2rem;
             color: #b8945a;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
             letter-spacing: 1px;
@@ -465,32 +465,32 @@
                 <div class="stats-grid">
                     <div class="form-group">
                         <label for="str">力量(STR)</label>
-                        <input type="number" id="str" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="str" placeholder="3-20" min="3" max="20" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="dex">敏捷(DEX)</label>
-                        <input type="number" id="dex" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="dex" placeholder="3-20" min="3" max="20" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="con">体质(CON)</label>
-                        <input type="number" id="con" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="con" placeholder="3-20" min="3" max="20" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="int">智力(INT)</label>
-                        <input type="number" id="int" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="int" placeholder="3-20" min="3" max="20" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="wis">感知(WIS)</label>
-                        <input type="number" id="wis" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="wis" placeholder="3-20" min="3" max="20" required>
                     </div>
                     
                     <div class="form-group">
                         <label for="cha">魅力(CHA)</label>
-                        <input type="number" id="cha" placeholder="3-18" min="3" max="18" required>
+                        <input type="number" id="cha" placeholder="3-20" min="3" max="20" required>
                     </div>
                 </div>
                 
@@ -628,7 +628,7 @@
                 }
                 
                 const stats = [str, dex, con, int, wis, cha];
-                if (stats.some(stat => isNaN(stat) || stat < 3 || stat > 20)) {
+                if (stats.some(stat => isNaN(stat) || stat < 3 || stat > 18)) {
                     alert('请确保所有属性值在3-20之间！');
                     return;
                 }
@@ -779,13 +779,10 @@
                     link.click();
                 });
             });
+            
             // 初始绘制一个示例六角图
             drawRadarChart([15, 14, 16, 12, 13, 14]);
         });
     </script>
 </body>
-
 </html>
-
-
-
