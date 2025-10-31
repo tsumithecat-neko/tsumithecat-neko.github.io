@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>喵影奇谋 - 角色卡生成器</title>
+    <title>喵影奇谋</title>
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <style>
         * {
@@ -268,18 +268,18 @@
         
         /* 角色卡样式 - 猫咪主题 */
         .card-container {
-            background: rgba(255, 253, 231, 0.9);
             border-radius: 20px;
             padding: 25px;
-            box-shadow: 0 10px 25px rgba(141, 110, 99, 0.2);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 800px;
             display: none;
             min-height: 400px;
-            border: 2px solid #d7ccc8;
+            border: 2px solid;
             position: relative;
             overflow: hidden;
             flex-direction: column;
+            transition: all 0.5s ease;
         }
         
         .card-container::before {
@@ -289,8 +289,8 @@
             left: 0;
             right: 0;
             height: 8px;
-            background: linear-gradient(90deg, #a1887f, #d7ccc8, #a1887f);
             border-radius: 20px 20px 0 0;
+            transition: all 0.5s ease;
         }
         
         .card-content {
@@ -303,7 +303,8 @@
             flex-direction: column;
             width: 40%;
             padding-right: 20px;
-            border-right: 2px solid #d7ccc8;
+            border-right: 2px solid;
+            transition: all 0.5s ease;
         }
         
         .card-avatar {
@@ -311,10 +312,11 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 4px solid #d7ccc8;
+            border: 4px solid;
             margin-bottom: 20px;
             align-self: center;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
         }
         
         .name-age-container {
@@ -324,15 +326,15 @@
         
         .card-name {
             font-size: 1.8rem;
-            color: #6d4c41;
             margin-bottom: 5px;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
             letter-spacing: 1px;
+            transition: all 0.5s ease;
         }
         
         .card-age {
             font-size: 1.2rem;
-            color: #8d6e63;
+            transition: all 0.5s ease;
         }
         
         .chart-container {
@@ -364,44 +366,43 @@
         }
         
         .stat-item {
-            background: rgba(255, 255, 255, 0.7);
             padding: 15px;
             border-radius: 15px;
             text-align: center;
-            border: 2px solid #d7ccc8;
-            transition: all 0.3s;
+            border: 2px solid;
+            transition: all 0.5s ease;
             position: relative;
             overflow: hidden;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
         }
         
         .stat-item:hover {
-            box-shadow: 0 8px 15px rgba(141, 110, 99, 0.2);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
             transform: translateY(-3px);
         }
         
         .stat-value {
-            font-size: 3rem;
+            font-size: 1.8rem;
             font-weight: bold;
-            color: #6d4c41;
             text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
         }
         
         .stat-name {
             font-size: 1rem;
-            color: #8d6e63;
+            transition: all 0.5s ease;
         }
         
         /* 底部装饰 */
         .card-footer {
             text-align: center;
-            color: #8d6e63;
             font-size: 14px;
             letter-spacing: 2px;
             margin-top: 20px;
             padding-top: 15px;
-            border-top: 2px solid #d7ccc8;
+            border-top: 2px solid;
             position: relative;
+            transition: all 0.5s ease;
         }
         
         .card-footer::before, .card-footer::after {
@@ -439,6 +440,377 @@
             background: linear-gradient(135deg, #8d6e63, #a1887f);
             box-shadow: 0 8px 20px rgba(141, 110, 99, 0.4);
             transform: translateY(-2px);
+        }
+        
+        /* 派系配色系统 */
+        /* 喵影派 - 默认棕色系 */
+        .faction-喵影派 .card-container {
+            background: linear-gradient(135deg, #fef5e7 0%, #f8e4d0 100%);
+        }
+        .faction-喵影派 .card-container::before {
+            background: linear-gradient(90deg, #a1887f, #d7ccc8, #a1887f);
+        }
+        .faction-喵影派 .card-container {
+            border-color: #d7ccc8;
+        }
+        .faction-喵影派 .card-left {
+            border-color: #d7ccc8;
+        }
+        .faction-喵影派 .card-avatar {
+            border-color: #d7ccc8;
+        }
+        .faction-喵影派 .card-name {
+            color: #6d4c41;
+        }
+        .faction-喵影派 .card-age {
+            color: #8d6e63;
+        }
+        .faction-喵影派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #d7ccc8;
+        }
+        .faction-喵影派 .stat-value {
+            color: #6d4c41;
+        }
+        .faction-喵影派 .stat-name {
+            color: #8d6e63;
+        }
+        .faction-喵影派 .card-footer {
+            color: #8d6e63;
+            border-color: #d7ccc8;
+        }
+        
+        /* 爪进派 - 蓝色系 */
+        .faction-爪进派 .card-container {
+            background: linear-gradient(135deg, #e6f7ff 0%, #b3e0ff 100%);
+        }
+        .faction-爪进派 .card-container::before {
+            background: linear-gradient(90deg, #5d8aa8, #89cff0, #5d8aa8);
+        }
+        .faction-爪进派 .card-container {
+            border-color: #89cff0;
+        }
+        .faction-爪进派 .card-left {
+            border-color: #89cff0;
+        }
+        .faction-爪进派 .card-avatar {
+            border-color: #89cff0;
+        }
+        .faction-爪进派 .card-name {
+            color: #2c3e50;
+        }
+        .faction-爪进派 .card-age {
+            color: #5d8aa8;
+        }
+        .faction-爪进派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #89cff0;
+        }
+        .faction-爪进派 .stat-value {
+            color: #2c3e50;
+        }
+        .faction-爪进派 .stat-name {
+            color: #5d8aa8;
+        }
+        .faction-爪进派 .card-footer {
+            color: #5d8aa8;
+            border-color: #89cff0;
+        }
+        
+        /* 喵皇派 - 金色系 */
+        .faction-喵皇派 .card-container {
+            background: linear-gradient(135deg, #fff9e6 0%, #ffebcc 100%);
+        }
+        .faction-喵皇派 .card-container::before {
+            background: linear-gradient(90deg, #d4af37, #ffd700, #d4af37);
+        }
+        .faction-喵皇派 .card-container {
+            border-color: #ffd700;
+        }
+        .faction-喵皇派 .card-left {
+            border-color: #ffd700;
+        }
+        .faction-喵皇派 .card-avatar {
+            border-color: #ffd700;
+        }
+        .faction-喵皇派 .card-name {
+            color: #8b6914;
+        }
+        .faction-喵皇派 .card-age {
+            color: #d4af37;
+        }
+        .faction-喵皇派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #ffd700;
+        }
+        .faction-喵皇派 .stat-value {
+            color: #8b6914;
+        }
+        .faction-喵皇派 .stat-name {
+            color: #d4af37;
+        }
+        .faction-喵皇派 .card-footer {
+            color: #d4af37;
+            border-color: #ffd700;
+        }
+        
+        /* 分离派 - 绿色系 */
+        .faction-分离派 .card-container {
+            background: linear-gradient(135deg, #f0fff0 0%, #d1ffd1 100%);
+        }
+        .faction-分离派 .card-container::before {
+            background: linear-gradient(90deg, #2e8b57, #98fb98, #2e8b57);
+        }
+        .faction-分离派 .card-container {
+            border-color: #98fb98;
+        }
+        .faction-分离派 .card-left {
+            border-color: #98fb98;
+        }
+        .faction-分离派 .card-avatar {
+            border-color: #98fb98;
+        }
+        .faction-分离派 .card-name {
+            color: #2e5e2e;
+        }
+        .faction-分离派 .card-age {
+            color: #2e8b57;
+        }
+        .faction-分离派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #98fb98;
+        }
+        .faction-分离派 .stat-value {
+            color: #2e5e2e;
+        }
+        .faction-分离派 .stat-name {
+            color: #2e8b57;
+        }
+        .faction-分离派 .card-footer {
+            color: #2e8b57;
+            border-color: #98fb98;
+        }
+        
+        /* 生态喵派 - 深绿色系 */
+        .faction-生态喵派 .card-container {
+            background: linear-gradient(135deg, #f0fff0 0%, #c1ffc1 100%);
+        }
+        .faction-生态喵派 .card-container::before {
+            background: linear-gradient(90deg, #228b22, #90ee90, #228b22);
+        }
+        .faction-生态喵派 .card-container {
+            border-color: #90ee90;
+        }
+        .faction-生态喵派 .card-left {
+            border-color: #90ee90;
+        }
+        .faction-生态喵派 .card-avatar {
+            border-color: #90ee90;
+        }
+        .faction-生态喵派 .card-name {
+            color: #2e5e2e;
+        }
+        .faction-生态喵派 .card-age {
+            color: #228b22;
+        }
+        .faction-生态喵派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #90ee90;
+        }
+        .faction-生态喵派 .stat-value {
+            color: #2e5e2e;
+        }
+        .faction-生态喵派 .stat-name {
+            color: #228b22;
+        }
+        .faction-生态喵派 .card-footer {
+            color: #228b22;
+            border-color: #90ee90;
+        }
+        
+        /* 历史派 - 复古黄色系 */
+        .faction-历史派 .card-container {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffe4b5 100%);
+        }
+        .faction-历史派 .card-container::before {
+            background: linear-gradient(90deg, #daa520, #f5deb3, #daa520);
+        }
+        .faction-历史派 .card-container {
+            border-color: #f5deb3;
+        }
+        .faction-历史派 .card-left {
+            border-color: #f5deb3;
+        }
+        .faction-历史派 .card-avatar {
+            border-color: #f5deb3;
+        }
+        .faction-历史派 .card-name {
+            color: #8b4513;
+        }
+        .faction-历史派 .card-age {
+            color: #daa520;
+        }
+        .faction-历史派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #f5deb3;
+        }
+        .faction-历史派 .stat-value {
+            color: #8b4513;
+        }
+        .faction-历史派 .stat-name {
+            color: #daa520;
+        }
+        .faction-历史派 .card-footer {
+            color: #daa520;
+            border-color: #f5deb3;
+        }
+        
+        /* 极端派 - 红色系 */
+        .faction-极端派 .card-container {
+            background: linear-gradient(135deg, #ffe6e6 0%, #ffcccc 100%);
+        }
+        .faction-极端派 .card-container::before {
+            background: linear-gradient(90deg, #b22222, #ff7f7f, #b22222);
+        }
+        .faction-极端派 .card-container {
+            border-color: #ff7f7f;
+        }
+        .faction-极端派 .card-left {
+            border-color: #ff7f7f;
+        }
+        .faction-极端派 .card-avatar {
+            border-color: #ff7f7f;
+        }
+        .faction-极端派 .card-name {
+            color: #8b0000;
+        }
+        .faction-极端派 .card-age {
+            color: #b22222;
+        }
+        .faction-极端派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #ff7f7f;
+        }
+        .faction-极端派 .stat-value {
+            color: #8b0000;
+        }
+        .faction-极端派 .stat-name {
+            color: #b22222;
+        }
+        .faction-极端派 .card-footer {
+            color: #b22222;
+            border-color: #ff7f7f;
+        }
+        
+        /* 流亡派 - 灰色系 */
+        .faction-流亡派 .card-container {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        }
+        .faction-流亡派 .card-container::before {
+            background: linear-gradient(90deg, #696969, #d3d3d3, #696969);
+        }
+        .faction-流亡派 .card-container {
+            border-color: #d3d3d3;
+        }
+        .faction-流亡派 .card-left {
+            border-color: #d3d3d3;
+        }
+        .faction-流亡派 .card-avatar {
+            border-color: #d3d3d3;
+        }
+        .faction-流亡派 .card-name {
+            color: #2f4f4f;
+        }
+        .faction-流亡派 .card-age {
+            color: #696969;
+        }
+        .faction-流亡派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #d3d3d3;
+        }
+        .faction-流亡派 .stat-value {
+            color: #2f4f4f;
+        }
+        .faction-流亡派 .stat-name {
+            color: #696969;
+        }
+        .faction-流亡派 .card-footer {
+            color: #696969;
+            border-color: #d3d3d3;
+        }
+        
+        /* 先锋派 - 紫色系 */
+        .faction-先锋派 .card-container {
+            background: linear-gradient(135deg, #f5f0ff 0%, #e6d9ff 100%);
+        }
+        .faction-先锋派 .card-container::before {
+            background: linear-gradient(90deg, #9370db, #d8bfd8, #9370db);
+        }
+        .faction-先锋派 .card-container {
+            border-color: #d8bfd8;
+        }
+        .faction-先锋派 .card-left {
+            border-color: #d8bfd8;
+        }
+        .faction-先锋派 .card-avatar {
+            border-color: #d8bfd8;
+        }
+        .faction-先锋派 .card-name {
+            color: #4b0082;
+        }
+        .faction-先锋派 .card-age {
+            color: #9370db;
+        }
+        .faction-先锋派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #d8bfd8;
+        }
+        .faction-先锋派 .stat-value {
+            color: #4b0082;
+        }
+        .faction-先锋派 .stat-name {
+            color: #9370db;
+        }
+        .faction-先锋派 .card-footer {
+            color: #9370db;
+            border-color: #d8bfd8;
+        }
+        
+        /* 懒散派 - 浅橙色系 */
+        .faction-懒散派 .card-container {
+            background: linear-gradient(135deg, #fff5e6 0%, #ffe4cc 100%);
+        }
+        .faction-懒散派 .card-container::before {
+            background: linear-gradient(90deg, #ffa07a, #ffdab9, #ffa07a);
+        }
+        .faction-懒散派 .card-container {
+            border-color: #ffdab9;
+        }
+        .faction-懒散派 .card-left {
+            border-color: #ffdab9;
+        }
+        .faction-懒散派 .card-avatar {
+            border-color: #ffdab9;
+        }
+        .faction-懒散派 .card-name {
+            color: #cd853f;
+        }
+        .faction-懒散派 .card-age {
+            color: #ffa07a;
+        }
+        .faction-懒散派 .stat-item {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #ffdab9;
+        }
+        .faction-懒散派 .stat-value {
+            color: #cd853f;
+        }
+        .faction-懒散派 .stat-name {
+            color: #ffa07a;
+        }
+        .faction-懒散派 .card-footer {
+            color: #ffa07a;
+            border-color: #ffdab9;
         }
         
         @media (max-width: 768px) {
@@ -497,7 +869,7 @@
     <div class="container">
         <header>
             <h1>喵影奇谋</h1>
-            <p class="subtitle">■ 猫咪特工角色信息录入中……</p>
+            <p class="subtitle">创建你的猫🐱</p>
         </header>
         
         <div class="form-container">
@@ -682,6 +1054,80 @@
             const cardContainer = document.getElementById('cardContainer');
             const speciesSelect = document.getElementById('species');
             
+            // 派系配色配置
+            const factionColors = {
+                '喵影派': {
+                    grid: '#a1887f',
+                    data: 'rgba(141, 110, 99, 0.2)',
+                    stroke: '#8d6e63',
+                    point: '#6d4c41',
+                    label: '#6d4c41'
+                },
+                '爪进派': {
+                    grid: '#5d8aa8',
+                    data: 'rgba(93, 138, 168, 0.2)',
+                    stroke: '#5d8aa8',
+                    point: '#2c3e50',
+                    label: '#2c3e50'
+                },
+                '喵皇派': {
+                    grid: '#d4af37',
+                    data: 'rgba(212, 175, 55, 0.2)',
+                    stroke: '#d4af37',
+                    point: '#8b6914',
+                    label: '#8b6914'
+                },
+                '分离派': {
+                    grid: '#2e8b57',
+                    data: 'rgba(46, 139, 87, 0.2)',
+                    stroke: '#2e8b57',
+                    point: '#2e5e2e',
+                    label: '#2e5e2e'
+                },
+                '生态喵派': {
+                    grid: '#228b22',
+                    data: 'rgba(34, 139, 34, 0.2)',
+                    stroke: '#228b22',
+                    point: '#2e5e2e',
+                    label: '#2e5e2e'
+                },
+                '历史派': {
+                    grid: '#daa520',
+                    data: 'rgba(218, 165, 32, 0.2)',
+                    stroke: '#daa520',
+                    point: '#8b4513',
+                    label: '#8b4513'
+                },
+                '极端派': {
+                    grid: '#b22222',
+                    data: 'rgba(178, 34, 34, 0.2)',
+                    stroke: '#b22222',
+                    point: '#8b0000',
+                    label: '#8b0000'
+                },
+                '流亡派': {
+                    grid: '#696969',
+                    data: 'rgba(105, 105, 105, 0.2)',
+                    stroke: '#696969',
+                    point: '#2f4f4f',
+                    label: '#2f4f4f'
+                },
+                '先锋派': {
+                    grid: '#9370db',
+                    data: 'rgba(147, 112, 219, 0.2)',
+                    stroke: '#9370db',
+                    point: '#4b0082',
+                    label: '#4b0082'
+                },
+                '懒散派': {
+                    grid: '#ffa07a',
+                    data: 'rgba(255, 160, 122, 0.2)',
+                    stroke: '#ffa07a',
+                    point: '#cd853f',
+                    label: '#cd853f'
+                }
+            };
+            
             // 上传头像功能
             uploadArea.addEventListener('click', function() {
                 avatarInput.click();
@@ -784,8 +1230,11 @@
                 document.getElementById('statWhisker').textContent = whisker;
                 document.getElementById('statPad').textContent = pad;
                 
+                // 应用派系配色
+                applyFactionColors(faction);
+                
                 // 绘制八角图
-                drawRadarChart([paw, eye, fur, tail, pet, purr, whisker, pad]);
+                drawRadarChart([paw, eye, fur, tail, pet, purr, whisker, pad], faction);
                 
                 // 确保角色卡显示
                 cardContainer.style.display = 'flex';
@@ -804,8 +1253,26 @@
                 }
             }
             
+            // 应用派系配色
+            function applyFactionColors(faction) {
+                // 移除所有派系类
+                const factions = [
+                    '喵影派', '爪进派', '喵皇派', '分离派', '生态喵派',
+                    '历史派', '极端派', '流亡派', '先锋派', '懒散派'
+                ];
+                
+                factions.forEach(f => {
+                    document.body.classList.remove(`faction-${f}`);
+                });
+                
+                // 添加当前派系类
+                if (faction) {
+                    document.body.classList.add(`faction-${faction}`);
+                }
+            }
+            
             // 绘制八角图
-            function drawRadarChart(stats) {
+            function drawRadarChart(stats, faction) {
                 const canvas = document.getElementById('radarChart');
                 const ctx = canvas.getContext('2d');
                 
@@ -822,8 +1289,11 @@
                 const centerY = canvas.height / 2;
                 const radius = Math.min(centerX, centerY) * 0.7;
                 
+                // 获取派系配色
+                const colors = factionColors[faction] || factionColors['喵影派'];
+                
                 // 绘制八角形网格
-                ctx.strokeStyle = '#a1887f';
+                ctx.strokeStyle = colors.grid;
                 ctx.lineWidth = 1;
                 
                 // 绘制同心八角形
@@ -857,8 +1327,8 @@
                 }
                 
                 // 绘制数据多边形
-                ctx.fillStyle = 'rgba(141, 110, 99, 0.2)';
-                ctx.strokeStyle = '#8d6e63';
+                ctx.fillStyle = colors.data;
+                ctx.strokeStyle = colors.stroke;
                 ctx.lineWidth = 2;
                 
                 ctx.beginPath();
@@ -879,7 +1349,7 @@
                 ctx.stroke();
                 
                 // 绘制数据点
-                ctx.fillStyle = '#6d4c41';
+                ctx.fillStyle = colors.point;
                 for (let i = 0; i < 8; i++) {
                     const angle = (Math.PI * 2 * i) / 8 - Math.PI / 2;
                     const value = stats[i] / 5 * radius;
@@ -893,7 +1363,7 @@
                 
                 // 添加属性标签
                 const attributes = ['爪子', '眼睛', '皮毛', '尾巴', '抚摸', '咕噜', '胡须', '肉垫'];
-                ctx.fillStyle = '#6d4c41';
+                ctx.fillStyle = colors.label;
                 ctx.font = '12px Arial';
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
@@ -911,7 +1381,7 @@
             exportBtn.addEventListener('click', function() {
                 // 使用html2canvas将角色卡转换为图片
                 html2canvas(cardContainer, {
-                    backgroundColor: '#fef5e7',
+                    backgroundColor: null,
                     scale: 2, // 提高分辨率
                     useCORS: true // 允许跨域图片
                 }).then(function(canvas) {
@@ -924,9 +1394,8 @@
             });
             
             // 初始绘制一个示例八角图
-            drawRadarChart([3, 3, 4, 3, 4, 3, 4, 3]);
+            drawRadarChart([3, 3, 4, 3, 4, 3, 4, 3], '喵影派');
         });
     </script>
 </body>
-
 </html>
